@@ -1,7 +1,7 @@
 # Script Console (C#)
 
 Windows desktop app (WPF, .NET 10) to browse, fill in and run PowerShell scripts. It's the C# version
-of the PowerShell Script Console (`C:\Ruchik\powershell-scripts\Utilities\DevTooling\ScriptConsole`),
+of the PowerShell Script Console,
 with the same look, behaviour and saved values.
 
 - **Folder page first:** suggested folders (recent, the script repo, QM scripts, ...) with their
