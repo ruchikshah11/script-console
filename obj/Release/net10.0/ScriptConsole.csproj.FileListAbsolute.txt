@@ -1,0 +1,14 @@
+C:\Ruchik\CSOM\ScriptConsole\bin\Release\net10.0\ScriptConsole.exe
+C:\Ruchik\CSOM\ScriptConsole\bin\Release\net10.0\ScriptConsole.deps.json
+C:\Ruchik\CSOM\ScriptConsole\bin\Release\net10.0\ScriptConsole.runtimeconfig.json
+C:\Ruchik\CSOM\ScriptConsole\bin\Release\net10.0\ScriptConsole.dll
+C:\Ruchik\CSOM\ScriptConsole\bin\Release\net10.0\ScriptConsole.pdb
+C:\Ruchik\CSOM\ScriptConsole\obj\Release\net10.0\ScriptConsole.GeneratedMSBuildEditorConfig.editorconfig
+C:\Ruchik\CSOM\ScriptConsole\obj\Release\net10.0\ScriptConsole.AssemblyInfoInputs.cache
+C:\Ruchik\CSOM\ScriptConsole\obj\Release\net10.0\ScriptConsole.AssemblyInfo.cs
+C:\Ruchik\CSOM\ScriptConsole\obj\Release\net10.0\ScriptConsole.csproj.CoreCompileInputs.cache
+C:\Ruchik\CSOM\ScriptConsole\obj\Release\net10.0\ScriptConsole.dll
+C:\Ruchik\CSOM\ScriptConsole\obj\Release\net10.0\refint\ScriptConsole.dll
+C:\Ruchik\CSOM\ScriptConsole\obj\Release\net10.0\ScriptConsole.pdb
+C:\Ruchik\CSOM\ScriptConsole\obj\Release\net10.0\ScriptConsole.genruntimeconfig.cache
+C:\Ruchik\CSOM\ScriptConsole\obj\Release\net10.0\ref\ScriptConsole.dll

@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <!-- Windows desktop app: no console window. -->
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>ScriptConsole</AssemblyName>
+    <RootNamespace>ScriptConsole</RootNamespace>
+    <StartupObject>ScriptConsole.Program</StartupObject>
+    <Version>2.0</Version>
+    <Product>Script Console</Product>
+    <Description>Browse, fill in and run PowerShell scripts.</Description>
+    <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+  </PropertyGroup>
+
+</Project>

@@ -1,0 +1,331 @@
+﻿<Window x:Class="ScriptConsole.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Script Console" Width="1440" Height="920" MinWidth="1080" MinHeight="680" WindowState="Maximized"
+        WindowStartupLocation="CenterScreen" Background="#F5F6F8"
+        FontFamily="Segoe UI" FontSize="13" Foreground="#1F2328" UseLayoutRounding="True" SnapsToDevicePixels="True">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- ============ Main page ============ -->
+        <Grid x:Name="MainPage" Visibility="Collapsed">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="370" MinWidth="260"/>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Border Background="White" BorderBrush="#E3E5E8" BorderThickness="0,0,1,0">
+                <DockPanel>
+                    <StackPanel DockPanel.Dock="Top" Margin="16,18,16,8">
+                        <DockPanel>
+                            <Button x:Name="ChangeFolderBtn" DockPanel.Dock="Right" Style="{StaticResource Btn}" Padding="10,5" VerticalAlignment="Center" ToolTip="Open another folder (Ctrl+O)">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="&#xE8DA;" FontFamily="Segoe MDL2 Assets" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Change" Margin="6,0,0,0"/>
+                                </StackPanel>
+                            </Button>
+                            <Border Width="36" Height="36" CornerRadius="9" Background="#2563EB">
+                                <TextBlock Text="&#xE756;" FontFamily="Segoe MDL2 Assets" FontSize="17" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <StackPanel Margin="11,0,10,0" VerticalAlignment="Center">
+                                <TextBlock x:Name="FolderName" FontSize="16" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+                                <TextBlock x:Name="FolderPath" FontSize="11" Foreground="#656D76" TextTrimming="CharacterEllipsis"/>
+                            </StackPanel>
+                        </DockPanel>
+                        <Grid Margin="0,16,0,0">
+                            <TextBox x:Name="SearchBox" Style="{StaticResource Input}" Padding="30,7,8,7"/>
+                            <TextBlock Text="&#xE721;" FontFamily="Segoe MDL2 Assets" FontSize="13" Foreground="#8C959F" Margin="11,0,0,0" VerticalAlignment="Center" IsHitTestVisible="False"/>
+                            <TextBlock x:Name="SearchHint" Text="Search scripts      Ctrl+F" Foreground="#8C959F" Margin="32,0,0,0" VerticalAlignment="Center" IsHitTestVisible="False"/>
+                        </Grid>
+                    </StackPanel>
+                    <Border DockPanel.Dock="Bottom" BorderBrush="#EEF0F2" BorderThickness="0,1,0,0" Padding="16,6,10,6">
+                        <DockPanel>
+                            <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                                <Button x:Name="CollapseBtn" Style="{StaticResource Tool}" Padding="6,3" ToolTip="Collapse all folders">
+                                    <TextBlock Text="&#xE73F;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
+                                </Button>
+                                <Button x:Name="RescanBtn" Style="{StaticResource Tool}" Padding="6,3" ToolTip="Rescan folder (F5 in the list)">
+                                    <TextBlock Text="&#xE72C;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
+                                </Button>
+                            </StackPanel>
+                            <TextBlock x:Name="CountText" FontSize="11.5" Foreground="#656D76" VerticalAlignment="Center"/>
+                        </DockPanel>
+                    </Border>
+                    <Grid>
+                        <TreeView x:Name="Tree" BorderThickness="0" Background="Transparent" Margin="8,2,6,4"
+                                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"/>
+                        <ListBox x:Name="Results" Visibility="Collapsed" BorderThickness="0" Background="Transparent" Margin="8,2,8,4"
+                                 ScrollViewer.HorizontalScrollBarVisibility="Disabled" ItemContainerStyle="{StaticResource ScriptItem}">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid>
+                                        <TextBlock Text="{Binding Title}" Visibility="{Binding HeaderVis}" FontSize="11" FontWeight="SemiBold" Foreground="#8C959F" Margin="0,8,0,0"/>
+                                        <StackPanel Visibility="{Binding ItemVis}">
+                                            <TextBlock Text="{Binding Title}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+                                            <TextBlock Text="{Binding Sub}" FontSize="11.5" Foreground="#656D76" TextTrimming="CharacterEllipsis" Margin="0,2,0,0"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </Grid>
+                </DockPanel>
+            </Border>
+
+            <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" Background="Transparent" ResizeBehavior="PreviousAndNext"/>
+
+            <Grid Grid.Column="2" Margin="6,16,18,14">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" MinHeight="300"/>
+                    <RowDefinition Height="10"/>
+                    <RowDefinition Height="240" MinHeight="100"/>
+                </Grid.RowDefinitions>
+
+                <Border x:Name="EmptyState" Style="{StaticResource Card}">
+                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="440">
+                        <Border Width="64" Height="64" CornerRadius="16" Background="#EEF2FF" HorizontalAlignment="Center">
+                            <TextBlock Text="&#xE943;" FontFamily="Segoe MDL2 Assets" FontSize="28" Foreground="#2563EB" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <TextBlock Text="Select a script" FontSize="18" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,16,0,6"/>
+                        <TextBlock x:Name="EmptyText" Foreground="#656D76" TextWrapping="Wrap" TextAlignment="Center"
+                                   Text="Pick a script on the left to read its comments, fill in its parameters and run it."/>
+                    </StackPanel>
+                </Border>
+
+                <Grid x:Name="DetailPanel" Visibility="Collapsed">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <Border Style="{StaticResource Card}">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock x:Name="ScriptTitle" FontSize="22" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+                                <TextBlock x:Name="ScriptPath" FontSize="12" Foreground="#656D76" Margin="0,2,0,0" TextTrimming="CharacterEllipsis"/>
+                                <WrapPanel x:Name="Chips" Margin="0,10,0,0"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Top" Margin="12,0,0,0">
+                                <Button x:Name="EditBtn" Style="{StaticResource Btn}" Margin="0,0,8,0" ToolTip="Open in editor">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="&#xE70F;" FontFamily="Segoe MDL2 Assets" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Edit" Margin="7,0,0,0"/>
+                                    </StackPanel>
+                                </Button>
+                                <Button x:Name="FolderBtn" Style="{StaticResource Btn}" ToolTip="Show in File Explorer">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="&#xE8B7;" FontFamily="Segoe MDL2 Assets" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Folder" Margin="7,0,0,0"/>
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <ScrollViewer Grid.Row="1" Margin="0,12,0,0" VerticalScrollBarVisibility="Auto">
+                        <StackPanel>
+                            <Border Style="{StaticResource Card}">
+                                <StackPanel>
+                                    <DockPanel Margin="0,0,0,8">
+                                        <Button x:Name="FullHelpBtn" DockPanel.Dock="Right" Style="{StaticResource Tool}" Foreground="#2563EB" Padding="8,2" Content="Show full help"/>
+                                        <TextBlock Text="Comments and help" FontSize="15" FontWeight="SemiBold"/>
+                                    </DockPanel>
+                                    <StackPanel x:Name="HelpPanel"/>
+                                </StackPanel>
+                            </Border>
+                            <Border Style="{StaticResource Card}" Margin="0,12,0,0">
+                                <StackPanel>
+                                    <DockPanel Margin="0,0,0,12">
+                                        <TextBlock x:Name="RequiredNote" DockPanel.Dock="Right" Foreground="#656D76" FontSize="12" VerticalAlignment="Center">
+                                            <Run Text="*" Foreground="#CF222E" FontWeight="SemiBold"/><Run Text=" required"/>
+                                        </TextBlock>
+                                        <TextBlock Text="Parameters" FontSize="15" FontWeight="SemiBold"/>
+                                    </DockPanel>
+                                    <StackPanel x:Name="ParamPanel" HorizontalAlignment="Left" MinWidth="460"/>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </ScrollViewer>
+
+                    <Border Grid.Row="2" Style="{StaticResource Card}" Margin="0,12,0,0">
+                        <StackPanel>
+                            <Border Background="#0D1117" CornerRadius="7" Padding="12,8">
+                                <DockPanel>
+                                    <Button x:Name="CopyCmdBtn" DockPanel.Dock="Right" Style="{StaticResource Tool}" Foreground="#8B949E" Padding="6,3" ToolTip="Copy command (secrets masked)">
+                                        <TextBlock Text="&#xE8C8;" FontFamily="Segoe MDL2 Assets" FontSize="12"/>
+                                    </Button>
+                                    <TextBlock Text="&gt;" Foreground="#3FB950" FontFamily="Consolas" FontSize="13" FontWeight="Bold" Margin="0,0,9,0" VerticalAlignment="Center"/>
+                                    <TextBox x:Name="CommandPreview" IsReadOnly="True" BorderThickness="0" Background="Transparent" Foreground="#E6EDF3"
+                                             CaretBrush="#E6EDF3" FontFamily="Consolas" FontSize="13" TextWrapping="Wrap" VerticalAlignment="Center"/>
+                                </DockPanel>
+                            </Border>
+                            <DockPanel Margin="0,12,0,0" LastChildFill="False">
+                                <Button x:Name="RunBtn" DockPanel.Dock="Right" Style="{StaticResource Primary}" Padding="26,9" ToolTip="Run (Ctrl+Enter)">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="&#xE768;" FontFamily="Segoe MDL2 Assets" VerticalAlignment="Center"/>
+                                        <TextBlock Text="Run" FontWeight="SemiBold" FontSize="14" Margin="8,0,0,0"/>
+                                    </StackPanel>
+                                </Button>
+                                <WrapPanel VerticalAlignment="Center">
+                                    <TextBlock Text="Extra args" Foreground="#656D76" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                    <TextBox x:Name="ExtraArgs" Style="{StaticResource Input}" Width="200" ToolTip="Appended after the parameters, e.g. -Verbose -WhatIf"/>
+                                    <TextBlock Text="Engine" Foreground="#656D76" VerticalAlignment="Center" Margin="16,0,8,0"/>
+                                    <ComboBox x:Name="EngineBox" Width="190"/>
+                                    <Border Background="#EEF1F4" CornerRadius="7" Margin="16,0,0,0" Padding="1" VerticalAlignment="Center">
+                                        <StackPanel Orientation="Horizontal">
+                                            <RadioButton x:Name="ModeApp" Style="{StaticResource Seg}" GroupName="RunMode" IsChecked="True"
+                                                         ToolTip="Stream output into the panel below (the script cannot ask for keyboard input)">Output here</RadioButton>
+                                            <RadioButton x:Name="ModeConsole" Style="{StaticResource Seg}" GroupName="RunMode"
+                                                         ToolTip="Open a console window - use this for scripts that ask for input">Console window</RadioButton>
+                                        </StackPanel>
+                                    </Border>
+                                </WrapPanel>
+                            </DockPanel>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+
+                <GridSplitter Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent" ResizeBehavior="PreviousAndNext"/>
+
+                <Border Grid.Row="2" Style="{StaticResource Card}" Padding="0">
+                    <TabControl x:Name="BottomTabs" BorderThickness="0" Background="Transparent" Padding="0" Margin="6,0,6,0">
+                        <TabItem Header="Output">
+                            <DockPanel>
+                                <DockPanel DockPanel.Dock="Top" Margin="8,8,4,8">
+                                    <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                                        <Button x:Name="StopBtn" Style="{StaticResource ToolDanger}" Padding="9,4" Margin="0,0,4,0" ToolTip="Stop the running script">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="&#xE71A;" FontFamily="Segoe MDL2 Assets" VerticalAlignment="Center"/>
+                                                <TextBlock Text="Stop" Margin="6,0,0,0"/>
+                                            </StackPanel>
+                                        </Button>
+                                        <Button x:Name="CopyOutBtn" Style="{StaticResource Tool}" Padding="9,4" Margin="0,0,4,0" ToolTip="Copy output">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="&#xE8C8;" FontFamily="Segoe MDL2 Assets" VerticalAlignment="Center"/>
+                                                <TextBlock Text="Copy" Margin="6,0,0,0"/>
+                                            </StackPanel>
+                                        </Button>
+                                        <Button x:Name="ClearOutBtn" Style="{StaticResource Tool}" Padding="9,4" ToolTip="Clear the view">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="&#xE894;" FontFamily="Segoe MDL2 Assets" VerticalAlignment="Center"/>
+                                                <TextBlock Text="Clear" Margin="6,0,0,0"/>
+                                            </StackPanel>
+                                        </Button>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <Border x:Name="OutputPill" CornerRadius="9" Padding="9,2" Background="#EEF1F4" Margin="0,0,10,0" VerticalAlignment="Center">
+                                            <TextBlock x:Name="OutputStatus" Text="Idle" FontSize="11.5" FontWeight="SemiBold" Foreground="#57606A"/>
+                                        </Border>
+                                        <TextBlock x:Name="OutputTitle" Foreground="#656D76" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+                                    </StackPanel>
+                                </DockPanel>
+                                <Border Background="#0D1117" CornerRadius="7" Margin="2,0,2,8">
+                                    <RichTextBox x:Name="OutputBox" IsReadOnly="True" BorderThickness="0" Background="Transparent" Foreground="#E6EDF3"
+                                                 Padding="6,8" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"/>
+                                </Border>
+                            </DockPanel>
+                        </TabItem>
+                        <TabItem Header="History">
+                            <ListView x:Name="HistoryList" BorderThickness="0" Margin="0,6,0,8" ToolTip="Double-click a run to show its output">
+                                <ListView.View>
+                                    <GridView>
+                                        <GridViewColumn Header="Started" Width="78" DisplayMemberBinding="{Binding Started}"/>
+                                        <GridViewColumn Header="Script" Width="220" DisplayMemberBinding="{Binding Script}"/>
+                                        <GridViewColumn Header="Status" Width="96">
+                                            <GridViewColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <TextBlock Text="{Binding Status}" Foreground="{Binding StatusColor}" FontWeight="SemiBold"/>
+                                                </DataTemplate>
+                                            </GridViewColumn.CellTemplate>
+                                        </GridViewColumn>
+                                        <GridViewColumn Header="Exit" Width="48" DisplayMemberBinding="{Binding Exit}"/>
+                                        <GridViewColumn Header="Duration" Width="78" DisplayMemberBinding="{Binding Duration}"/>
+                                        <GridViewColumn Header="Where" Width="110" DisplayMemberBinding="{Binding Mode}"/>
+                                        <GridViewColumn Header="Command" Width="640" DisplayMemberBinding="{Binding Command}"/>
+                                    </GridView>
+                                </ListView.View>
+                            </ListView>
+                        </TabItem>
+                    </TabControl>
+                </Border>
+            </Grid>
+        </Grid>
+
+        <!-- ============ Folder picker page ============ -->
+        <Grid x:Name="PickerPage">
+            <Border Style="{StaticResource Card}" Width="780" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="30,26" Margin="20">
+                <DockPanel>
+                    <StackPanel DockPanel.Dock="Top">
+                        <StackPanel Orientation="Horizontal">
+                            <Border Width="40" Height="40" CornerRadius="10" Background="#2563EB">
+                                <TextBlock Text="&#xE756;" FontFamily="Segoe MDL2 Assets" FontSize="19" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <StackPanel Margin="12,0,0,0" VerticalAlignment="Center">
+                                <TextBlock Text="Script Console" FontSize="17" FontWeight="SemiBold"/>
+                                <TextBlock Text="Browse, fill in and run PowerShell scripts" FontSize="12" Foreground="#656D76"/>
+                            </StackPanel>
+                        </StackPanel>
+                        <TextBlock Text="Which folder should I load scripts from?" FontSize="21" FontWeight="SemiBold" Margin="0,24,0,4"/>
+                        <TextBlock Text="Every .ps1 in the folder and its subfolders is listed. Comments and parameters are read without running anything."
+                                   Foreground="#656D76" TextWrapping="Wrap"/>
+                        <DockPanel Margin="0,18,0,0">
+                            <Button x:Name="OpenBtn" DockPanel.Dock="Right" Style="{StaticResource Primary}" Margin="8,0,0,0" Padding="22,7">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="Open" FontWeight="SemiBold"/>
+                                    <TextBlock Text="&#xE72A;" FontFamily="Segoe MDL2 Assets" FontSize="11" VerticalAlignment="Center" Margin="8,0,0,0"/>
+                                </StackPanel>
+                            </Button>
+                            <Button x:Name="BrowseBtn" DockPanel.Dock="Right" Style="{StaticResource Btn}" Margin="8,0,0,0">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="&#xE8DA;" FontFamily="Segoe MDL2 Assets" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Browse" Margin="7,0,0,0"/>
+                                </StackPanel>
+                            </Button>
+                            <TextBox x:Name="PathBox" Style="{StaticResource Input}" FontSize="14"/>
+                        </DockPanel>
+                        <TextBlock x:Name="PickerError" Foreground="#CF222E" Margin="2,6,0,0" Visibility="Collapsed"/>
+                        <TextBlock Text="SUGGESTED FOLDERS" FontSize="11" FontWeight="SemiBold" Foreground="#8C959F" Margin="2,24,0,8"/>
+                    </StackPanel>
+                    <Button x:Name="PickerBackBtn" DockPanel.Dock="Bottom" Style="{StaticResource Btn}" Content="Back to scripts" HorizontalAlignment="Right" Margin="0,16,0,0" Visibility="Collapsed"/>
+                    <ListBox x:Name="Suggestions" BorderThickness="0" Background="Transparent" MaxHeight="380"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled" ItemContainerStyle="{StaticResource SuggestItem}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Border Width="38" Height="38" CornerRadius="9" Background="#FFF4D6">
+                                        <TextBlock Text="&#xE8B7;" FontFamily="Segoe MDL2 Assets" FontSize="17" Foreground="#B7791F" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                    <StackPanel Grid.Column="1" Margin="12,0,10,0" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding Path}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+                                        <TextBlock Text="{Binding Label}" FontSize="12" Foreground="#656D76" Margin="0,2,0,0"/>
+                                    </StackPanel>
+                                    <Border Grid.Column="2" CornerRadius="10" Padding="10,3" Background="{Binding BadgeBg}" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding CountText}" FontSize="12" FontWeight="SemiBold" Foreground="{Binding BadgeFg}"/>
+                                    </Border>
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </DockPanel>
+            </Border>
+        </Grid>
+
+        <Border Grid.Row="1" Background="White" BorderBrush="#E3E5E8" BorderThickness="0,1,0,0" Padding="16,5">
+            <TextBlock x:Name="StatusText" FontSize="11.5" Foreground="#656D76" TextTrimming="CharacterEllipsis"/>
+        </Border>
+    </Grid>
+</Window>

@@ -1,0 +1,9 @@
+global using System.Collections.Concurrent;
+global using System.Diagnostics;
+global using System.IO;
+global using System.Runtime.InteropServices;
+global using System.Text;
+global using System.Text.Json;
+global using System.Text.Json.Nodes;
+global using System.Text.RegularExpressions;
+global using ScriptConsole.Core;
